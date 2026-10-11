@@ -7,7 +7,7 @@ function App() {
   // Backend se saare reviews mangwana (GET API)
   const fetchReviews = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/reviews');
+      const response = await fetch('https://feedback-aggregator-teg3.onrender.com/api/reviews');
       const data = await response.json();
       setReviews(data);
     } catch (error) {
@@ -24,7 +24,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Page ko refresh hone se rokn
     try {
-      const response = await fetch('http://localhost:5000/api/reviews', {
+      const response = await fetch('https://feedback-aggregator-teg3.onrender.com/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
