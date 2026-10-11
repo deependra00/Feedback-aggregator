@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 // Apna Review model import kar rahe hain (folder ka naam 'model' hai)
-const Review = require('./model/Review');
+const Review = require('./model/review');
 
 const app = express();
 
