@@ -4,7 +4,7 @@ function App() {
   const [reviews, setReviews] = useState([]);
   const [formData, setFormData] = useState({ username: '', rating: 5, comment: '' });
 
-  // Backend se saare reviews mangwana (GET API)
+  // Fetch all reviews from the backend API (GET API)
   const fetchReviews = async () => {
     try {
       const response = await fetch('https://feedback-aggregator-teg3.onrender.com/api/reviews');
@@ -15,96 +15,86 @@ function App() {
     }
   };
 
-  // Jab page load ho, toh reviews fetch karein
+  // Fetch reviews when the component mounts / page loads
   useEffect(() => {
     fetchReviews();
   }, []);
 
-  // Naya review database mein save karna (POST API)
+  // Save a new review to the database (POST API)
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Page ko refresh hone se rokn
+    e.preventDefault(); // Prevent default form submission and page refresh
     try {
       const response = await fetch('https://feedback-aggregator-teg3.onrender.com/api/reviews', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        setFormData({ username: '', rating: 5, comment: '' }); // Form clear kar do
-        fetchReviews(); // List ko update kar do taaki naya review turant dikhe
+        // Reset form inputs after successful submission
+        setFormData({ username: '', rating: 5, comment: '' });
+        // Refresh the review list to show the newly added review
+        fetchReviews();
       }
     } catch (error) {
-      console.error("Error saving review:", error);
+      console.error("Error submitting review:", error);
     }
   };
 
+  // Handle form input state changes
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1 style={{ textAlign: 'center', color: '#333' }}>📝 Feedback & Review Aggregator</h1>
+    <div style={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>
+      <h1>Feedback & Review Aggregator</h1>
 
-      {/* Review likhne ka Form */}
-      <div style={{ backgroundColor: '#f9f9f9', padding: '20px', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)', marginBottom: '30px' }}>
-        <h2 style={{ marginTop: '0' }}>Add Your Review</h2>
-        <form onSubmit={handleSubmit}>
-
-          <div style={{ marginBottom: '15px' }}>
-            <input
-              type="text"
-              placeholder="Your Name"
-              value={formData.username}
-              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-              required
-              style={{ width: '95%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-            />
-          </div>
-
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ fontWeight: 'bold' }}>Rating (1 to 5): </label>
-            <input
-              type="number"
-              min="1" max="5"
-              value={formData.rating}
-              onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
-              required
-              style={{ padding: '8px', width: '60px', borderRadius: '5px', border: '1px solid #ccc' }}
-            />
-          </div>
-
-          <div style={{ marginBottom: '15px' }}>
-            <textarea
-              placeholder="Write your feedback here..."
-              value={formData.comment}
-              onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
-              required
-              style={{ width: '95%', padding: '10px', height: '80px', borderRadius: '5px', border: '1px solid #ccc' }}
-            />
-          </div>
-
-          <button type="submit" style={{ width: '100%', padding: '12px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', fontSize: '16px', cursor: 'pointer', fontWeight: 'bold' }}>
-            Submit Review
-          </button>
-
-        </form>
-      </div>
-
-      {/* Save kiye hue Reviews ki List */}
-      <h2>Recent Feedbacks</h2>
-      {reviews.length === 0 ? (
-        <p style={{ color: '#777' }}>No reviews yet. Be the first one to review!</p>
-      ) : (
+      {/* Review Submission Form */}
+      <form onSubmit={handleSubmit}>
         <div>
-          {reviews.map((rev) => (
-            <div key={rev._id} style={{ backgroundColor: '#fff', padding: '15px', borderRadius: '8px', border: '1px solid #eaeaea', marginBottom: '15px' }}>
-              <h3 style={{ margin: '0 0 10px 0', display: 'flex', justifyContent: 'space-between' }}>
-                {rev.username}
-                <span style={{ color: '#FFD700' }}>{'⭐'.repeat(rev.rating)}</span>
-              </h3>
-              <p style={{ margin: '0 0 10px 0', color: '#555' }}>{rev.comment}</p>
-              <small style={{ color: '#999' }}>{new Date(rev.createdAt).toLocaleString()}</small>
-            </div>
-          ))}
+          <label>Username: </label>
+          <input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            required
+          />
         </div>
+        <div>
+          <label>Rating: </label>
+          <select name="rating" value={formData.rating} onChange={handleChange}>
+            {[1, 2, 3, 4, 5].map((num) => (
+              <option key={num} value={num}>{num}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Comment: </label>
+          <textarea
+            name="comment"
+            value={formData.comment}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <button type="submit">Submit Review</button>
+      </form>
+
+      {/* Display List of Reviews */}
+      <h2>All Reviews</h2>
+      {reviews.length === 0 ? (
+        <p>No reviews found.</p>
+      ) : (
+        reviews.map((rev) => (
+          <div key={rev._id} style={{ border: '1px solid #ccc', margin: '10px 0', padding: '10px' }}>
+            <h3>{rev.username} ({rev.rating}/5 ⭐)</h3>
+            <p>{rev.comment}</p>
+          </div>
+        ))
       )}
     </div>
   );

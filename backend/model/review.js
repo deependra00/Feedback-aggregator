@@ -8,8 +8,8 @@ const reviewSchema = new mongoose.Schema({
     rating: {
         type: Number,
         required: true,
-        min: 1, // Kam se kam 1 star
-        max: 5  // Zyada se zyada 5 star
+        min: 1, // Minimum rating is 1 star
+        max: 5  // Maximum rating is 5 stars
     },
     comment: {
         type: String,
@@ -19,6 +19,6 @@ const reviewSchema = new mongoose.Schema({
         type: String,
         default: 'General'
     }
-}, { timestamps: true }); // timestamps se create hone ka date/time khud save ho jayega
+}, { timestamps: true }); // timestamps automatically saves creation and update date/time
 
 module.exports = mongoose.model('Review', reviewSchema);
