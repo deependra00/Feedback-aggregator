@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './App.css'; // Importing your existing stylesheet
 
 function App() {
   const [reviews, setReviews] = useState([]);
@@ -15,14 +16,14 @@ function App() {
     }
   };
 
-  // Fetch reviews when the component mounts / page loads
+  // Fetch reviews when the component mounts
   useEffect(() => {
     fetchReviews();
   }, []);
 
   // Save a new review to the database (POST API)
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission and page refresh
+    e.preventDefault(); // Prevent page refresh on form submission
     try {
       const response = await fetch('https://feedback-aggregator-teg3.onrender.com/api/reviews', {
         method: 'POST',
@@ -35,7 +36,7 @@ function App() {
       if (response.ok) {
         // Reset form inputs after successful submission
         setFormData({ username: '', rating: 5, comment: '' });
-        // Refresh the review list to show the newly added review
+        // Refresh review list to display the newly added review
         fetchReviews();
       }
     } catch (error) {
@@ -43,19 +44,19 @@ function App() {
     }
   };
 
-  // Handle form input state changes
+  // Handle form input state updates
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>
+    <div className="container">
       <h1>Feedback & Review Aggregator</h1>
 
       {/* Review Submission Form */}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Username: </label>
+      <form onSubmit={handleSubmit} className="review-form">
+        <div className="form-group">
+          <label>Username:</label>
           <input
             type="text"
             name="username"
@@ -64,16 +65,18 @@ function App() {
             required
           />
         </div>
-        <div>
-          <label>Rating: </label>
+
+        <div className="form-group">
+          <label>Rating:</label>
           <select name="rating" value={formData.rating} onChange={handleChange}>
             {[1, 2, 3, 4, 5].map((num) => (
               <option key={num} value={num}>{num}</option>
             ))}
           </select>
         </div>
-        <div>
-          <label>Comment: </label>
+
+        <div className="form-group">
+          <label>Comment:</label>
           <textarea
             name="comment"
             value={formData.comment}
@@ -81,21 +84,24 @@ function App() {
             required
           />
         </div>
+
         <button type="submit">Submit Review</button>
       </form>
 
       {/* Display List of Reviews */}
       <h2>All Reviews</h2>
-      {reviews.length === 0 ? (
-        <p>No reviews found.</p>
-      ) : (
-        reviews.map((rev) => (
-          <div key={rev._id} style={{ border: '1px solid #ccc', margin: '10px 0', padding: '10px' }}>
-            <h3>{rev.username} ({rev.rating}/5 ⭐)</h3>
-            <p>{rev.comment}</p>
-          </div>
-        ))
-      )}
+      <div className="reviews-list">
+        {reviews.length === 0 ? (
+          <p>No reviews found.</p>
+        ) : (
+          reviews.map((rev) => (
+            <div key={rev._id} className="review-card">
+              <h3>{rev.username} ({rev.rating}/5 ⭐)</h3>
+              <p>{rev.comment}</p>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
