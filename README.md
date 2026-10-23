@@ -1,10 +1,10 @@
-# 💬 Feedback & Review Aggregator
+# Feedback & Review Aggregator
 
 A full-stack MERN (MongoDB, Express.js, React.js, Node.js) web application designed to collect, aggregate, and display user reviews and feedback in real-time.
 
 ---
 
-## 🌟 Key Features
+##  Key Features
 
 * **Real-time Feedback Submission:** Users can submit reviews with a username, rating (1-5 stars), and custom comments.
 * **Dynamic Review Aggregation:** Displays all stored feedback seamlessly from the MongoDB database.
@@ -14,7 +14,7 @@ A full-stack MERN (MongoDB, Express.js, React.js, Node.js) web application desig
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### **Frontend**
 * **React.js** (Vite framework)
@@ -28,7 +28,7 @@ A full-stack MERN (MongoDB, Express.js, React.js, Node.js) web application desig
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```text
 Feedback-aggregator/
